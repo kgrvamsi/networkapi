@@ -13,15 +13,17 @@ type CommitHistory struct {
 	Timestamp string `json:"timestamp"`
 }
 
+// NetworkAPI ... Interface for library connecting over netconf
 type NetworkAPI interface {
 	Connect() (*junos.Junos, error)
 	GetCommitHistory(session *junos.Junos) (string, error)
 	GetConfig(session *junos.Junos, format string) (string, error)
 	GetInterfaces(session *junos.Junos, format string) (string, error)
 	GetLogs(session *junos.Junos) (string, error)
-	GetRouterTime(session *junos.Junos,format string) (string, error)
+	GetRouterTime(session *junos.Junos, format string) (string, error)
 }
 
+//Connect ...
 func (c *Client) Connect() (*junos.Junos, error) {
 
 	auth := &junos.AuthMethod{
@@ -35,6 +37,7 @@ func (c *Client) Connect() (*junos.Junos, error) {
 	return jnpr, nil
 }
 
+// GetCommitHistory ...
 func (c *Client) GetCommitHistory(session *junos.Junos) (string, error) {
 
 	cmtHistory, err := session.CommitHistory()
@@ -62,6 +65,7 @@ func (c *Client) GetCommitHistory(session *junos.Junos) (string, error) {
 	return string(output), nil
 }
 
+//GetConfig ...
 func (c *Client) GetConfig(session *junos.Junos, format string) (string, error) {
 
 	config, err := session.GetConfig(format)
@@ -72,7 +76,9 @@ func (c *Client) GetConfig(session *junos.Junos, format string) (string, error) 
 	return config, nil
 }
 
-func (c *Client) GetInterfaces(session *junos.Junos, format string) (string, error){
+//GetInterfaces ...
+func (c *Client) GetInterfaces(session *junos.Junos, format string) (string, error) {
+
 	interfaces, err := session.GetConfig(format, "interfaces")
 	if err != nil {
 		return "", err
@@ -81,7 +87,8 @@ func (c *Client) GetInterfaces(session *junos.Junos, format string) (string, err
 	return interfaces, nil
 }
 
-func (c *Client) GetLogs(session *junos.Junos) (string, error){
+// GetLogs ...
+func (c *Client) GetLogs(session *junos.Junos) (string, error) {
 
 	logs, err := session.Command("show log messages|no-more")
 	if err != nil {
@@ -91,9 +98,10 @@ func (c *Client) GetLogs(session *junos.Junos) (string, error){
 	return logs, nil
 }
 
-func (c *Client) GetRouterTime(session *junos.Junos, format string) (string, error){
+// GetRouterTime ...
+func (c *Client) GetRouterTime(session *junos.Junos, format string) (string, error) {
 
-	rTime, err := session.Command("show system uptime",format)
+	rTime, err := session.Command("show system uptime", format)
 	if err != nil {
 		return "", err
 	}
