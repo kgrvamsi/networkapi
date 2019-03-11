@@ -2,6 +2,8 @@ package networkapi
 
 import (
 	"encoding/json"
+	"fmt"
+
 	junos "github.com/scottdware/go-junos"
 )
 
@@ -20,6 +22,7 @@ type NetworkAPI interface {
 	GetConfig(session *junos.Junos, format string) (string, error)
 	GetInterfaces(session *junos.Junos, format string) (string, error)
 	GetLogs(session *junos.Junos) (string, error)
+	GetInterfaceEvents(session *junos.Junos) (string, error)
 	GetRouterTime(session *junos.Junos, format string) (string, error)
 }
 
@@ -90,7 +93,22 @@ func (c *Client) GetInterfaces(session *junos.Junos, format string) (string, err
 // GetLogs ...
 func (c *Client) GetLogs(session *junos.Junos) (string, error) {
 
-	logs, err := session.Command("show log messages|no-more")
+	command := fmt.Sprintf("show log messages")
+
+	logs, err := session.Command(command)
+	if err != nil {
+		return "", err
+	}
+
+	return logs, nil
+}
+
+// GetInterfaceEvents ...
+func (c *Client) GetInterfaceEvents(session *junos.Junos) (string, error) {
+
+	command := fmt.Sprintf("show log intf-events")
+
+	logs, err := session.Command(command)
 	if err != nil {
 		return "", err
 	}

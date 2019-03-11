@@ -82,7 +82,6 @@ type NetworkSSH interface {
 	GetInterfacesSSH(session *ssh.Session, format string) (string, error)
 	GetBGPStatusSSH(session *ssh.Session, format string) (string, error)
 	GetLogMessagesSSH(session *ssh.Session, format string) (string, error)
-	GetLogMessagesSSH(session *ssh.Session, format string) (string, error)
 	GetCommitHistorySSH(session *ssh.Session, format string) (string, error)
 	GetLLDPNeighborsSSH(session *ssh.Session, format string) (string, error)
 	GetOutputSSH(session *ssh.Session, command string, format string) (string, error)
