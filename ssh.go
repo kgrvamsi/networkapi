@@ -75,6 +75,113 @@ type Bgppeers struct {
 	Peerstate   string
 }
 
+type RouterTime struct {
+	MultiRoutingEngineResults []struct {
+		MultiRoutingEngineItem []struct {
+			Rename []struct {
+				Data string `json:"data"`
+			} `json:"re-name"`
+			SystemUptimeInformation []struct {
+				Attributes struct {
+					Xmlns string `json:"xmlns"`
+				} `json:"attributes"`
+				Currenttime []struct {
+					Datetime []struct {
+						Attributes struct {
+							Junosseconds string `json:"junos:seconds"`
+						} `json:"attributes"`
+						Data string `json:"data"`
+					} `json:"date-time"`
+				} `json:"current-time"`
+				LastConfiguredTime []struct {
+					DateTime []struct {
+						Attributes struct {
+							Junosseconds string `json:"junos:seconds"`
+						} `json:"attributes"`
+						Data string `json:"data"`
+					} `json:"date-time"`
+					TimeLength []struct {
+						Attributes struct {
+							Junosseconds string `json:"junos:seconds"`
+						} `json:"attributes"`
+						Data string `json:"data"`
+					} `json:"time-length"`
+					User []struct {
+						Data string `json:"data"`
+					} `json:"user"`
+				} `json:"last-configured-time"`
+				ProtocolsStartedTime []struct {
+					DateTime []struct {
+						Attributes struct {
+							Junosseconds string `json:"junos:seconds"`
+						} `json:"attributes"`
+						Data string `json:"data"`
+					} `json:"date-time"`
+					TimeLength []struct {
+						Attributes struct {
+							Junosseconds string `json:"junos:seconds"`
+						} `json:"attributes"`
+						Data string `json:"data"`
+					} `json:"time-length"`
+				} `json:"protocols-started-time"`
+				SystemBootedTime []struct {
+					DateTime []struct {
+						Attributes struct {
+							Junosseconds string `json:"junos:seconds"`
+						} `json:"attributes"`
+						Data string `json:"data"`
+					} `json:"date-time"`
+					TimeLength []struct {
+						Attributes struct {
+							Junosseconds string `json:"junos:seconds"`
+						} `json:"attributes"`
+						Data string `json:"data"`
+					} `json:"time-length"`
+				} `json:"system-booted-time"`
+				TimeSource []struct {
+					Data string `json:"data"`
+				} `json:"time-source"`
+				UptimeInformation []struct {
+					ActiveUserCount []struct {
+						Attributes struct {
+							Junosformat string `json:"junos:format"`
+						} `json:"attributes"`
+						Data string `json:"data"`
+					} `json:"active-user-count"`
+					DateTime []struct {
+						Attributes struct {
+							Junosseconds string `json:"junos:seconds"`
+						} `json:"attributes"`
+						Data string `json:"data"`
+					} `json:"date-time"`
+					LoadAverage1 []struct {
+						Data string `json:"data"`
+					} `json:"load-average-1"`
+					LoadAverage15 []struct {
+						Data string `json:"data"`
+					} `json:"load-average-15"`
+					LoadAverage5 []struct {
+						Data string `json:"data"`
+					} `json:"load-average-5"`
+					UpTime []struct {
+						Attributes struct {
+							Junosseconds string `json:"junos:seconds"`
+						} `json:"attributes"`
+						Data string `json:"data"`
+					} `json:"up-time"`
+					UserTable []struct{} `json:"user-table"`
+				} `json:"uptime-information"`
+			} `json:"system-uptime-information"`
+		} `json:"multi-routing-engine-item"`
+	} `json:"multi-routing-engine-results"`
+}
+
+type RouterTimeRes struct {
+	Currenttime        string `json:"current_time"`
+	LastConfiguredTime string `json:"last_configured_time"`
+	SystemBootedTime   string `json:"system_booted_time"`
+}
+
 // NetworkSSH ... Interface for library connecting over ssh
 type NetworkSSH interface {
 	ConnectSSH(*ssh.Session, error)
@@ -82,7 +189,7 @@ type NetworkSSH interface {
 	GetInterfacesSSH(session *ssh.Session, format string) (string, error)
 	GetBGPStatusSSH(session *ssh.Session, format string) (string, error)
 	GetLogMessagesSSH(session *ssh.Session, format string) (string, error)
-	GetCommitHistorySSH(session *ssh.Session, format string) (string, error)
+	GetCommitHistorySSH(session *ssh.Session, port string) (string, error)
 	GetLLDPNeighborsSSH(session *ssh.Session, format string) (string, error)
 	GetOutputSSH(session *ssh.Session, command string, format string) (string, error)
 }
@@ -174,10 +281,28 @@ func (c *Client) GetLogMessagesSSH(session *ssh.Session, format string) (string,
 
 //GetSystemUptimeSSH ...
 func (c *Client) GetSystemUptimeSSH(session *ssh.Session, format string) (string, error) {
-	var stdoutBuf bytes.Buffer
+	var (
+		stdoutBuf   bytes.Buffer
+		result      string
+		_routerTime RouterTime
+	)
 	session.Stdout = &stdoutBuf
-	session.Run("show system uptime | display " + format)
-	result := stdoutBuf.String()
+	if format == "json" {
+		session.Run("show system uptime | display " + format)
+		result := stdoutBuf.Bytes()
+		json.Unmarshal(result, &_routerTime)
+
+		_result := RouterTimeRes{Currenttime: _routerTime.MultiRoutingEngineResults[0].MultiRoutingEngineItem[0].SystemUptimeInformation[0].Currenttime[0].Datetime[0].Data,
+			LastConfiguredTime: _routerTime.MultiRoutingEngineResults[0].MultiRoutingEngineItem[0].SystemUptimeInformation[0].LastConfiguredTime[0].DateTime[0].Data,
+			SystemBootedTime:   _routerTime.MultiRoutingEngineResults[0].MultiRoutingEngineItem[0].SystemUptimeInformation[0].SystemBootedTime[0].DateTime[0].Data}
+
+		output, _ := json.Marshal(_result)
+		return string(output), nil
+	} else {
+		session.Run("show system uptime | display " + format)
+		result := stdoutBuf.String()
+		return result, nil
+	}
 	return result, nil
 }
 
