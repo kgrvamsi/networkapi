@@ -23,7 +23,8 @@ type NetworkAPI interface {
 	GetInterfaces(session *junos.Junos, format string) (string, error)
 	GetLogs(session *junos.Junos) (string, error)
 	GetInterfaceEvents(session *junos.Junos) (string, error)
-	GetRouterTime(session *junos.Junos, format string) (string, error)
+	GetRouterTime(session *junos.Junos) (string, error)
+	Close() *junos.Junos
 }
 
 //Connect ...
@@ -38,6 +39,11 @@ func (c *Client) Connect() (*junos.Junos, error) {
 		return nil, err
 	}
 	return jnpr, nil
+}
+
+//Close ...
+func (c *Client) Close(session *junos.Junos) {
+	session.Close()
 }
 
 // GetCommitHistory ...
@@ -117,9 +123,9 @@ func (c *Client) GetInterfaceEvents(session *junos.Junos) (string, error) {
 }
 
 // GetRouterTime ...
-func (c *Client) GetRouterTime(session *junos.Junos, format string) (string, error) {
+func (c *Client) GetRouterTime(session *junos.Junos) (string, error) {
 
-	rTime, err := session.Command("show system uptime", format)
+	rTime, err := session.Command("show system uptime")
 	if err != nil {
 		return "", err
 	}

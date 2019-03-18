@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"encoding/xml"
+	"fmt"
 	"strings"
 
 	"golang.org/x/crypto/ssh"
@@ -188,10 +189,11 @@ type NetworkSSH interface {
 	GetConfigSSH(session *ssh.Session, format string) (string, error)
 	GetInterfacesSSH(session *ssh.Session, format string) (string, error)
 	GetBGPStatusSSH(session *ssh.Session, format string) (string, error)
-	GetLogMessagesSSH(session *ssh.Session, format string) (string, error)
+	GetLogMessagesSSH(session *ssh.Session) (string, error)
 	GetCommitHistorySSH(session *ssh.Session, port string) (string, error)
 	GetLLDPNeighborsSSH(session *ssh.Session, format string) (string, error)
 	GetOutputSSH(session *ssh.Session, command string, format string) (string, error)
+	CloseSSH(session *ssh.Session)
 }
 
 // ConnectSSH ... Establishes session with the device
@@ -213,6 +215,11 @@ func (c *Client) ConnectSSH() (*ssh.Session, error) {
 		return nil, err
 	}
 	return session, nil
+}
+
+// CloseSSH ...
+func (c *Client) CloseSSH(session *ssh.Session) {
+	session.Close()
 }
 
 // GetConfigSSH ... Returns the configuration of device
@@ -271,10 +278,11 @@ func (c *Client) GetBGPStatusSSH(session *ssh.Session, format string) (string, e
 }
 
 //GetLogMessagesSSH ...
-func (c *Client) GetLogMessagesSSH(session *ssh.Session, format string) (string, error) {
+func (c *Client) GetLogMessagesSSH(session *ssh.Session) (string, error) {
 	var stdoutBuf bytes.Buffer
 	session.Stdout = &stdoutBuf
-	session.Run("show log messages |no-more| display " + format)
+	command := fmt.Sprintf("show log messages")
+	session.Run(command)
 	result := stdoutBuf.String()
 	return result, nil
 }
