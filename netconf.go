@@ -4,23 +4,15 @@ import (
 	"encoding/json"
 	"fmt"
 
-	junos "github.com/scottdware/go-junos"
+	junos "github.com/kgrvamsi/go-junos"
 )
-
-type CommitHistory struct {
-	User      string `json:"user"`
-	Method    string `json:"method"`
-	Log       string `json:"log"`
-	Comment   string `json:"comment"`
-	Timestamp string `json:"timestamp"`
-}
 
 // NetworkAPI ... Interface for library connecting over netconf
 type NetworkAPI interface {
 	Connect() (*junos.Junos, error)
 	GetCommitHistory(session *junos.Junos) (string, error)
 	GetConfig(session *junos.Junos, format string) (string, error)
-	GetInterfaces(session *junos.Junos, format string) (string, error)
+	GetInterfaces(session *junos.Junos) (string, error)
 	GetLogs(session *junos.Junos) (string, error)
 	GetInterfaceEvents(session *junos.Junos) (string, error)
 	GetRouterTime(session *junos.Junos) (string, error)
@@ -86,11 +78,11 @@ func (c *Client) GetConfig(session *junos.Junos, format string) (string, error) 
 }
 
 //GetInterfaces ...
-func (c *Client) GetInterfaces(session *junos.Junos, format string) (string, error) {
+func (c *Client) GetInterfaces(session *junos.Junos) (*junos.Views, error) {
 
-	interfaces, err := session.GetConfig(format, "interfaces")
+	interfaces, err := session.View("interface")
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	return interfaces, nil
