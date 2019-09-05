@@ -88,6 +88,28 @@ func (c *Client) GetInterfaces(session *junos.Junos) (*junos.Views, error) {
 	return interfaces, nil
 }
 
+//GetLLDPNeighbors ...
+func (c *Client) GetLLDPNeighbors(session *junos.Junos) (*junos.Views, error) {
+
+	lldapInfo, err := session.View("lldp")
+	if err != nil {
+		return nil, err
+	}
+
+	return lldapInfo, nil
+}
+
+//GetHostInfo ...
+func (c *Client) GetHostInfo(session *junos.Junos) (*junos.Views, error) {
+
+	hostInfo, err := session.View("hostname")
+	if err != nil {
+		return nil, err
+	}
+
+	return hostInfo, nil
+}
+
 // GetLogs ...
 func (c *Client) GetLogs(session *junos.Junos) (string, error) {
 
