@@ -118,7 +118,6 @@ func (c *Client) GetLogMessagesSSH(session *ssh.Session) (string, error) {
 func (c *Client) GetSystemUptimeSSH(session *ssh.Session, format string) (string, error) {
 	var (
 		stdoutBuf   bytes.Buffer
-		result      string
 		_routerTime RouterTime
 	)
 	session.Stdout = &stdoutBuf
