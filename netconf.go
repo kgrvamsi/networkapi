@@ -16,6 +16,9 @@ type NetworkAPI interface {
 	GetLogs(session *junos.Junos) (string, error)
 	GetInterfaceEvents(session *junos.Junos) (string, error)
 	GetRouterTime(session *junos.Junos) (string, error)
+	GetHostInfo(session *junos.Junos) (string, error)
+	GetLLDPNeighbors(session *junos.Junos) (string, error)
+	GetInterfaceDiagnostics(session *junos.Junos) (string, error)
 	Close() *junos.Junos
 }
 
@@ -127,6 +130,19 @@ func (c *Client) GetLogs(session *junos.Junos) (string, error) {
 func (c *Client) GetInterfaceEvents(session *junos.Junos) (string, error) {
 
 	command := fmt.Sprintf("show log intf-events")
+
+	logs, err := session.Command(command)
+	if err != nil {
+		return "", err
+	}
+
+	return logs, nil
+}
+
+// GetInterfaceDiagnostics ...
+func (c *Client) GetInterfaceDiagnostics(session *junos.Junos) (string, error) {
+
+	command := fmt.Sprintf("show interfaces diagnostics optics")
 
 	logs, err := session.Command(command)
 	if err != nil {

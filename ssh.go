@@ -15,6 +15,7 @@ type NetworkSSH interface {
 	ConnectSSH(*ssh.Session, error)
 	GetConfigSSH(session *ssh.Session, format string) (string, error)
 	GetInterfacesSSH(session *ssh.Session, format string) (string, error)
+	GetInterfacesDiagnosticsSSH(session *ssh.Session) (InterfacesDiagnosticsSSH, error)
 	GetBGPStatusSSH(session *ssh.Session, format string) (string, error)
 	GetLogMessagesSSH(session *ssh.Session) (string, error)
 	GetCommitHistorySSH(session *ssh.Session, port string) (string, error)
@@ -83,6 +84,21 @@ func (c *Client) GetInterfacesSSH(session *ssh.Session, format string) (string, 
 	}
 	output, _ := json.Marshal(Interfacesdetails)
 	return string(output), nil
+}
+
+//GetInterfacesSSH ...Returns the interfaces details of device
+func (c *Client) GetInterfacesDiagnosticsSSH(session *ssh.Session) (InterfacesDiagnosticsSSH, error) {
+
+	var stdoutBuf bytes.Buffer
+	session.Stdout = &stdoutBuf
+	command := fmt.Sprintf("show interfaces diagnostics optics | display xml")
+	session.Run(command)
+	result := stdoutBuf.String()
+
+	var interfaces InterfacesDiagnosticsSSH
+	xml.Unmarshal([]byte(result), &interfaces)
+
+	return interfaces, nil
 }
 
 // GetBGPStatusSSH ...

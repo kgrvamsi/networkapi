@@ -242,6 +242,87 @@ type InterfaceDescriptions struct {
 	} `json:"interface-information"`
 }
 
+type InterfacesDiagnosticsSSH struct {
+	XMLName              xml.Name `xml:"rpc-reply"`
+	Junos                string   `xml:"junos,attr"`
+	InterfaceInformation struct {
+		Xmlns             string `xml:"xmlns,attr"`
+		Style             string `xml:"style,attr"`
+		PhysicalInterface []struct {
+			Name              string `xml:"name"`
+			OpticsDiagnostics struct {
+				ModuleTemperature struct {
+					Celsius string `xml:"celsius,attr"`
+				} `xml:"module-temperature"`
+				ModuleVoltage                       string `xml:"module-voltage"`
+				ModuleTemperatureHighAlarm          string `xml:"module-temperature-high-alarm"`
+				ModuleTemperatureLowAlarm           string `xml:"module-temperature-low-alarm"`
+				ModuleTemperatureHighWarn           string `xml:"module-temperature-high-warn"`
+				ModuleTemperatureLowWarn            string `xml:"module-temperature-low-warn"`
+				ModuleVoltageHighAlarm              string `xml:"module-voltage-high-alarm"`
+				ModuleVoltageLowAlarm               string `xml:"module-voltage-low-alarm"`
+				ModuleVoltageHighWarn               string `xml:"module-voltage-high-warn"`
+				ModuleVoltageLowWarn                string `xml:"module-voltage-low-warn"`
+				ModuleTemperatureHighAlarmThreshold struct {
+					Celsius string `xml:"celsius,attr"`
+				} `xml:"module-temperature-high-alarm-threshold"`
+				ModuleTemperatureLowAlarmThreshold struct {
+					Celsius string `xml:"celsius,attr"`
+				} `xml:"module-temperature-low-alarm-threshold"`
+				ModuleTemperatureHighWarnThreshold struct {
+					Celsius string `xml:"celsius,attr"`
+				} `xml:"module-temperature-high-warn-threshold"`
+				ModuleTemperatureLowWarnThreshold struct {
+					Celsius string `xml:"celsius,attr"`
+				} `xml:"module-temperature-low-warn-threshold"`
+				ModuleVoltageHighAlarmThreshold    string `xml:"module-voltage-high-alarm-threshold"`
+				ModuleVoltageLowAlarmThreshold     string `xml:"module-voltage-low-alarm-threshold"`
+				ModuleVoltageHighWarnThreshold     string `xml:"module-voltage-high-warn-threshold"`
+				ModuleVoltageLowWarnThreshold      string `xml:"module-voltage-low-warn-threshold"`
+				LaserBiasCurrentHighAlarmThreshold string `xml:"laser-bias-current-high-alarm-threshold"`
+				LaserBiasCurrentLowAlarmThreshold  string `xml:"laser-bias-current-low-alarm-threshold"`
+				LaserBiasCurrentHighWarnThreshold  string `xml:"laser-bias-current-high-warn-threshold"`
+				LaserBiasCurrentLowWarnThreshold   string `xml:"laser-bias-current-low-warn-threshold"`
+				LaserTxPowerHighAlarmThreshold     string `xml:"laser-tx-power-high-alarm-threshold"`
+				LaserTxPowerHighAlarmThresholdDbm  string `xml:"laser-tx-power-high-alarm-threshold-dbm"`
+				LaserTxPowerLowAlarmThreshold      string `xml:"laser-tx-power-low-alarm-threshold"`
+				LaserTxPowerLowAlarmThresholdDbm   string `xml:"laser-tx-power-low-alarm-threshold-dbm"`
+				LaserTxPowerHighWarnThreshold      string `xml:"laser-tx-power-high-warn-threshold"`
+				LaserTxPowerHighWarnThresholdDbm   string `xml:"laser-tx-power-high-warn-threshold-dbm"`
+				LaserTxPowerLowWarnThreshold       string `xml:"laser-tx-power-low-warn-threshold"`
+				LaserTxPowerLowWarnThresholdDbm    string `xml:"laser-tx-power-low-warn-threshold-dbm"`
+				LaserRxPowerHighAlarmThreshold     string `xml:"laser-rx-power-high-alarm-threshold"`
+				LaserRxPowerHighAlarmThresholdDbm  string `xml:"laser-rx-power-high-alarm-threshold-dbm"`
+				LaserRxPowerLowAlarmThreshold      string `xml:"laser-rx-power-low-alarm-threshold"`
+				LaserRxPowerLowAlarmThresholdDbm   string `xml:"laser-rx-power-low-alarm-threshold-dbm"`
+				LaserRxPowerHighWarnThreshold      string `xml:"laser-rx-power-high-warn-threshold"`
+				LaserRxPowerHighWarnThresholdDbm   string `xml:"laser-rx-power-high-warn-threshold-dbm"`
+				LaserRxPowerLowWarnThreshold       string `xml:"laser-rx-power-low-warn-threshold"`
+				LaserRxPowerLowWarnThresholdDbm    string `xml:"laser-rx-power-low-warn-threshold-dbm"`
+				OpticsDiagnosticsLaneValues        struct {
+					LaneIndex                        string `xml:"lane-index"`
+					LaserBiasCurrent                 string `xml:"laser-bias-current"`
+					LaserOutputPower                 string `xml:"laser-output-power"`
+					LaserOutputPowerDbm              string `xml:"laser-output-power-dbm"`
+					LaserRxOpticalPower              string `xml:"laser-rx-optical-power"`
+					LaserRxOpticalPowerDbm           string `xml:"laser-rx-optical-power-dbm"`
+					LaserBiasCurrentHighAlarm        string `xml:"laser-bias-current-high-alarm"`
+					LaserBiasCurrentLowAlarm         string `xml:"laser-bias-current-low-alarm"`
+					LaserBiasCurrentHighWarn         string `xml:"laser-bias-current-high-warn"`
+					LaserBiasCurrentLowWarn          string `xml:"laser-bias-current-low-warn"`
+					LaserRxPowerHighAlarm            string `xml:"laser-rx-power-high-alarm"`
+					LaserRxPowerLowAlarm             string `xml:"laser-rx-power-low-alarm"`
+					LaserRxPowerHighWarn             string `xml:"laser-rx-power-high-warn"`
+					LaserRxPowerLowWarn              string `xml:"laser-rx-power-low-warn"`
+					TxLossOfSignalFunctionalityAlarm string `xml:"tx-loss-of-signal-functionality-alarm"`
+					RxLossOfSignalAlarm              string `xml:"rx-loss-of-signal-alarm"`
+					TxLaserDisabledAlarm             string `xml:"tx-laser-disabled-alarm"`
+				} `xml:"optics-diagnostics-lane-values"`
+			} `xml:"optics-diagnostics"`
+		} `xml:"physical-interface"`
+	} `xml:"interface-information"`
+}
+
 type RouterTimeRes struct {
 	Currenttime        string `json:"current_time"`
 	LastConfiguredTime string `json:"last_configured_time"`
